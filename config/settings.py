@@ -6,7 +6,9 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
-DEBUG = os.environ.get("DJANGO_DEBUG", "True").strip().lower() == "true"
+DEBUG = os.environ.get(
+    "DJANGO_DEBUG", "True"
+).strip().lower() == "true"
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
 
@@ -39,6 +41,19 @@ CSRF_TRUSTED_ORIGINS = [
     if origin.strip()
 ]
 
+# Cloudinary credentials
+CLOUDINARY_CLOUD_NAME = os.environ.get(
+    "CLOUDINARY_CLOUD_NAME", ""
+).strip()
+
+CLOUDINARY_API_KEY = os.environ.get(
+    "CLOUDINARY_API_KEY", ""
+).strip()
+
+CLOUDINARY_API_SECRET = os.environ.get(
+    "CLOUDINARY_API_SECRET", ""
+).strip()
+
 # Applications
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -47,6 +62,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "cloudinary_storage",
+    "cloudinary",
     "accounts",
     "products",
     "orders",
@@ -85,8 +102,8 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
-# Production: use Neon PostgreSQL through DATABASE_URL.
-# Local development: continue using the existing MySQL database.
+# Production: Neon PostgreSQL through DATABASE_URL.
+# Local development: existing MySQL database.
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -136,6 +153,18 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
             "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        ),
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
             "NumericPasswordValidator"
         ),
     },
@@ -152,16 +181,43 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# Media storage
+# Use Cloudinary when all three credentials are configured.
+# Otherwise, use local filesystem storage for development.
+if (
+    CLOUDINARY_CLOUD_NAME
+    and CLOUDINARY_API_KEY
+    and CLOUDINARY_API_SECRET
+):
+    STORAGES = {
+        "default": {
+            "BACKEND": (
+                "cloudinary_storage.storage.MediaCloudinaryStorage"
+            ),
+        },
+        "staticfiles": {
+            "BACKEND": (
+                "whitenoise.storage."
+                "CompressedManifestStaticFilesStorage"
+            ),
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": (
+                "django.core.files.storage.FileSystemStorage"
+            ),
+        },
+        "staticfiles": {
+            "BACKEND": (
+                "whitenoise.storage."
+                "CompressedManifestStaticFilesStorage"
+            ),
+        },
+    }
 
-# Media files
+# Media URL and root for local development
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
