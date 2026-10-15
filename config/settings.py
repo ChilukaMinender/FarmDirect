@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+
+from pathlib import Path
 import os
 import dj_database_url
 
@@ -6,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").strip().lower() == "true"
+
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
 
 if DEBUG and not SECRET_KEY:
@@ -14,16 +16,28 @@ if DEBUG and not SECRET_KEY:
 if not DEBUG and not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY must be set in production.")
 
+# Allowed hosts
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
-        "DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost"
+        "DJANGO_ALLOWED_HOSTS",
+        "127.0.0.1,localhost",
     ).split(",")
     if host.strip()
 ]
 
 if not DEBUG and not ALLOWED_HOSTS:
     raise ValueError("DJANGO_ALLOWED_HOSTS must be set in production.")
+
+# CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        "DJANGO_CSRF_TRUSTED_ORIGINS",
+        "",
+    ).split(",")
+    if origin.strip()
+]
 
 # Applications
 INSTALLED_APPS = [
@@ -71,6 +85,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
+# Production: use Neon PostgreSQL through DATABASE_URL.
+# Local development: continue using the existing MySQL database.
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
@@ -90,23 +107,37 @@ else:
             "PASSWORD": os.environ.get("F2C_DB_PASSWORD", ""),
             "HOST": "localhost",
             "PORT": "3306",
-            "OPTIONS": {"charset": "utf8mb4"},
+            "OPTIONS": {
+                "charset": "utf8mb4",
+            },
         }
     }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "NumericPasswordValidator"
+        ),
     },
 ]
 
@@ -151,19 +182,31 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = int(
         os.environ.get("DJANGO_HSTS_SECONDS", "0")
     )
+
     SECURE_HSTS_INCLUDE_SUBDOMAINS = (
-        os.environ.get("DJANGO_HSTS_INCLUDE_SUBDOMAINS", "False").lower()
-        == "true"
-    )
-    SECURE_HSTS_PRELOAD = (
-        os.environ.get("DJANGO_HSTS_PRELOAD", "False").lower()
-        == "true"
+        os.environ.get(
+            "DJANGO_HSTS_INCLUDE_SUBDOMAINS",
+            "False",
+        ).strip().lower() == "true"
     )
 
-    if os.environ.get("DJANGO_SECURE_PROXY_SSL_HEADER", "False").lower() == "true":
+    SECURE_HSTS_PRELOAD = (
+        os.environ.get(
+            "DJANGO_HSTS_PRELOAD",
+            "False",
+        ).strip().lower() == "true"
+    )
+
+    if (
+        os.environ.get(
+            "DJANGO_SECURE_PROXY_SSL_HEADER",
+            "False",
+        ).strip().lower() == "true"
+    ):
         SECURE_PROXY_SSL_HEADER = (
             "HTTP_X_FORWARDED_PROTO",
             "https",
         )
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
