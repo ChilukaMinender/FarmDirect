@@ -1,0 +1,1111 @@
+﻿{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#174b32">
+
+
+<title>Order Details | FarmDirect</title>
+
+<style>
+    :root {
+        --green-950: #123b29;
+        --green-900: #174b32;
+        --green-800: #206440;
+        --green-700: #28794b;
+        --green-100: #e8f4e9;
+        --green-50: #f3f9f2;
+        --cream: #fbfaf5;
+        --text: #23352b;
+        --muted: #758178;
+        --border: #e7ece5;
+        --white: #ffffff;
+        --red: #b42318;
+        --red-bg: #fff0ee;
+        --shadow: 0 12px 35px rgba(28, 63, 39, 0.07);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", Arial, sans-serif;
+        background: var(--cream);
+        color: var(--text);
+        line-height: 1.6;
+    }
+
+    a {
+        color: inherit;
+    }
+
+    button,
+    a {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .site-header {
+        background: var(--green-950);
+        color: var(--white);
+    }
+
+    .header-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        min-height: 76px;
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .brand-icon {
+        width: 43px;
+        height: 43px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 24px;
+    }
+
+    .brand-name {
+        display: block;
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+    }
+
+    .brand-tagline {
+        display: block;
+        color: #c8dfce;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+    }
+
+    .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .header-nav a {
+        color: #f3f8f3;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 10px 13px;
+        border-radius: 9px;
+        transition: background 0.2s ease;
+    }
+
+    .header-nav a:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .page-container {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 24px 64px;
+    }
+
+    .breadcrumbs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        align-items: center;
+        margin-bottom: 27px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .breadcrumbs a {
+        color: var(--green-800);
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .breadcrumbs a:hover {
+        text-decoration: underline;
+    }
+
+    .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 35px;
+        margin-bottom: 26px;
+        border-radius: 22px;
+        color: white;
+        background: linear-gradient(
+            125deg,
+            #174b32 0%,
+            #247446 65%,
+            #398653 100%
+        );
+        box-shadow: 0 16px 38px rgba(23, 75, 50, 0.15);
+    }
+
+    .hero::after {
+        content: "🌿";
+        position: absolute;
+        right: 32px;
+        bottom: -28px;
+        font-size: 145px;
+        opacity: 0.12;
+        transform: rotate(-20deg);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 700px;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        margin-bottom: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0f4e4;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+    }
+
+    .hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(27px, 4vw, 39px);
+        line-height: 1.2;
+        letter-spacing: -1px;
+    }
+
+    .hero p {
+        max-width: 550px;
+        margin: 0;
+        color: #e1eee3;
+        font-size: 15px;
+    }
+
+    .order-reference {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        align-items: center;
+        margin-top: 22px;
+        padding: 9px 13px;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.13);
+        font-size: 13px;
+    }
+
+    .order-reference strong {
+        color: white;
+        font-size: 14px;
+    }
+
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(270px, 0.85fr);
+        gap: 23px;
+        align-items: start;
+    }
+
+    .main-column,
+    .side-column {
+        min-width: 0;
+    }
+
+    .card {
+        margin-bottom: 22px;
+        padding: 25px;
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        background: var(--white);
+        box-shadow: var(--shadow);
+    }
+
+    .card-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 21px;
+    }
+
+    .card-heading h2 {
+        margin: 0;
+        font-size: 19px;
+        letter-spacing: -0.4px;
+    }
+
+    .section-caption {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 12px;
+        border-radius: 50px;
+        background: var(--green-100);
+        color: var(--green-800);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .status-pending {
+        background: #fff4d9;
+        color: #8a5a00;
+    }
+
+    .status-confirmed {
+        background: #e8f1ff;
+        color: #2457a6;
+    }
+
+    .status-shipped {
+        background: #eee8ff;
+        color: #6541a5;
+    }
+
+    .status-delivered {
+        background: #e4f6e9;
+        color: #237344;
+    }
+
+    .status-cancelled {
+        background: var(--red-bg);
+        color: var(--red);
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .detail-item {
+        padding: 15px;
+        border: 1px solid #edf0eb;
+        border-radius: 12px;
+        background: #fcfdfb;
+    }
+
+    .detail-label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .detail-value {
+        display: block;
+        overflow-wrap: anywhere;
+        font-size: 14px;
+        font-weight: 750;
+    }
+
+    .address-box {
+        grid-column: 1 / -1;
+    }
+
+    .address-value {
+        line-height: 1.8;
+        font-weight: 500;
+    }
+
+    .payment-method {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        border: 1px solid #e5eee5;
+        border-radius: 12px;
+        background: var(--green-50);
+    }
+
+    .payment-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 43px;
+        height: 43px;
+        border-radius: 12px;
+        background: #e0efdf;
+        font-size: 22px;
+    }
+
+    .payment-method strong {
+        display: block;
+        font-size: 14px;
+    }
+
+    .payment-method small {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .items-count {
+        padding: 5px 9px;
+        border-radius: 8px;
+        background: var(--green-50);
+        color: var(--green-800);
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 18px 0;
+        border-bottom: 1px solid #edf0eb;
+    }
+
+    .item-row:first-of-type {
+        padding-top: 0;
+    }
+
+    .item-info {
+        display: flex;
+        gap: 13px;
+        align-items: flex-start;
+        min-width: 0;
+    }
+
+    .item-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 47px;
+        height: 47px;
+        border-radius: 13px;
+        background: var(--green-50);
+        font-size: 23px;
+    }
+
+    .item-name {
+        margin: 1px 0 4px;
+        font-size: 14px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .item-meta {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .item-price {
+        flex-shrink: 0;
+        text-align: right;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .price-caption {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .total-section {
+        padding-top: 20px;
+    }
+
+    .total-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 12px;
+        color: #667369;
+        font-size: 13px;
+    }
+
+    .total-line.final {
+        margin: 18px 0 0;
+        padding-top: 17px;
+        border-top: 1px dashed #dce4db;
+        color: var(--green-950);
+        font-size: 17px;
+        font-weight: 850;
+    }
+
+    .total-line.final strong {
+        font-size: 23px;
+        letter-spacing: -0.5px;
+    }
+
+    .side-card-title {
+        margin: 0 0 5px;
+        font-size: 17px;
+    }
+
+    .tracking-list {
+        position: relative;
+        padding: 8px 0 0;
+    }
+
+    .tracking-step {
+        position: relative;
+        display: flex;
+        gap: 13px;
+        padding-bottom: 25px;
+    }
+
+    .tracking-step:last-child {
+        padding-bottom: 0;
+    }
+
+    .tracking-marker {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        flex: 0 0 28px;
+        height: 28px;
+        border: 2px solid #dce5dc;
+        border-radius: 50%;
+        background: white;
+        color: #879489;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .tracking-step:not(:last-child)::after {
+        position: absolute;
+        content: "";
+        top: 27px;
+        bottom: 0;
+        left: 13px;
+        width: 2px;
+        background: #e6ece5;
+    }
+
+    .tracking-step.is-current .tracking-marker {
+        border-color: var(--green-700);
+        background: var(--green-700);
+        color: white;
+    }
+
+    .tracking-step.is-current .tracking-title {
+        color: var(--green-800);
+    }
+
+    .tracking-title {
+        margin: 2px 0 4px;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .tracking-description {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .cancelled-notice {
+        padding: 15px;
+        border: 1px solid #f5d5d1;
+        border-radius: 12px;
+        background: var(--red-bg);
+        color: #8f241c;
+        font-size: 13px;
+    }
+
+    .cancelled-notice strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .farmer-note {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 16px;
+        border-radius: 12px;
+        background: var(--green-50);
+    }
+
+    .farmer-note-icon {
+        font-size: 24px;
+    }
+
+    .farmer-note strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--green-900);
+        font-size: 13px;
+    }
+
+    .farmer-note p {
+        margin: 0;
+        color: #627367;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .action-buttons {
+        display: grid;
+        gap: 11px;
+        margin-top: 20px;
+    }
+
+    .button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 46px;
+        padding: 12px 16px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        text-decoration: none;
+        text-align: center;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover {
+        transform: translateY(-1px);
+    }
+
+    .button-primary {
+        background: var(--green-800);
+        color: white;
+    }
+
+    .button-primary:hover {
+        background: var(--green-950);
+    }
+
+    .button-secondary {
+        border-color: #dfe7de;
+        background: white;
+        color: var(--green-900);
+    }
+
+    .button-secondary:hover {
+        background: var(--green-50);
+    }
+
+    .button-danger {
+        border-color: #f0d0cc;
+        background: white;
+        color: var(--red);
+    }
+
+    .button-danger:hover {
+        background: var(--red-bg);
+    }
+
+    .cancel-form {
+        margin: 0;
+    }
+
+    .cancel-help {
+        margin: 9px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+        text-align: center;
+        line-height: 1.6;
+    }
+
+    .site-footer {
+        padding: 25px 20px;
+        border-top: 1px solid var(--border);
+        background: white;
+        text-align: center;
+    }
+
+    .footer-brand {
+        margin-bottom: 5px;
+        color: var(--green-900);
+        font-size: 16px;
+        font-weight: 850;
+    }
+
+    .site-footer p {
+        margin: 4px 0;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    @media (max-width: 800px) {
+        .layout {
+            grid-template-columns: 1fr;
+        }
+
+        .side-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .side-column .card {
+            margin-bottom: 0;
+        }
+
+        .side-column .actions-card {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .header-inner {
+            padding: 13px 17px;
+            align-items: flex-start;
+        }
+
+        .brand-name {
+            font-size: 18px;
+        }
+
+        .brand-tagline {
+            font-size: 10px;
+        }
+
+        .header-nav {
+            gap: 0;
+        }
+
+        .header-nav a {
+            padding: 9px 7px;
+            font-size: 12px;
+        }
+
+        .page-container {
+            padding: 22px 15px 40px;
+        }
+
+        .hero {
+            padding: 26px 22px;
+            border-radius: 17px;
+        }
+
+        .hero::after {
+            right: 2px;
+            font-size: 100px;
+        }
+
+        .hero p {
+            font-size: 13px;
+        }
+
+        .card {
+            padding: 19px;
+            border-radius: 14px;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .address-box {
+            grid-column: auto;
+        }
+
+        .side-column {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .side-column .actions-card {
+            grid-column: auto;
+        }
+
+        .total-line.final strong {
+            font-size: 20px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            scroll-behavior: auto !important;
+            transition: none !important;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="{% url 'home' %}">
+            <span class="brand-icon">🌱</span>
+            <span>
+                <span class="brand-name">FarmDirect</span>
+                <span class="brand-tagline">Fresh from farm to family</span>
+            </span>
+        </a>
+
+
+    <nav class="header-nav" aria-label="Main navigation">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'my_orders' %}">My Orders</a>
+    </nav>
+</div>
+
+
+</header>
+
+<main class="page-container">
+
+
+<div class="breadcrumbs">
+    <a href="{% url 'home' %}">Home</a>
+    <span>/</span>
+    <a href="{% url 'my_orders' %}">My Orders</a>
+    <span>/</span>
+    <span>Order Details</span>
+</div>
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="eyebrow">🌿 Your FarmDirect purchase</span>
+
+        <h1>
+            {% if order.status == 'cancelled' %}
+                Order details
+            {% elif order.status == 'delivered' %}
+                Your order has arrived!
+            {% else %}
+                Thank you for your order!
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if order.status == 'cancelled' %}
+                View the details and history of your cancelled order.
+            {% elif order.status == 'delivered' %}
+                We hope you enjoy your fresh produce. Thank you for supporting our farmers.
+            {% else %}
+                Your fresh produce journey starts here. Find your order information and track its current status below.
+            {% endif %}
+        </p>
+
+        <div class="order-reference">
+            <span>Order number</span>
+            <strong>#{{ display_number }}</strong>
+        </div>
+    </div>
+</section>
+
+<div class="layout">
+
+    <div class="main-column">
+
+        <section class="card">
+            <div class="card-heading">
+                <div>
+                    <h2>Order overview</h2>
+                    <p class="section-caption">
+                        Your order information at a glance.
+                    </p>
+                </div>
+
+                <span class="status-badge status-{{ order.status|lower }}">
+                    <span class="status-dot"></span>
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Order number</span>
+                    <span class="detail-value">
+                        #{{ display_number }}
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Date placed</span>
+                    <span class="detail-value">
+                        {{ order.created_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Payment method</span>
+                    <span class="detail-value">Cash on Delivery</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Total items</span>
+                    <span class="detail-value">
+                        {{ order.items.count }}
+                        {% if order.items.count == 1 %}item{% else %}items{% endif %}
+                    </span>
+                </div>
+
+                <div class="detail-item address-box">
+                    <span class="detail-label">Delivery address</span>
+                    <span class="detail-value address-value">
+                        {{ order.delivery_address|linebreaksbr }}
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-heading">
+                <div>
+                    <h2>Items in your order</h2>
+                    <p class="section-caption">
+                        Fresh produce selected for you.
+                    </p>
+                </div>
+
+                <span class="items-count">
+                    {{ order.items.count }}
+                    {% if order.items.count == 1 %}item{% else %}items{% endif %}
+                </span>
+            </div>
+
+            {% for item in order.items.all %}
+                <div class="item-row">
+                    <div class="item-info">
+                        <div class="item-icon">🥬</div>
+
+                        <div>
+                            <p class="item-name">
+                                {{ item.product.name }}
+                            </p>
+
+                            <div class="item-meta">
+                                Quantity: {{ item.quantity }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item-price">
+                        ₹{{ item.price|floatformat:2 }}
+                        <span class="price-caption">
+                            {% if item.quantity > 1 %}
+                                ₹{{ item.price|floatformat:2 }} each
+                            {% else %}
+                                Item price
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="section-caption">
+                    No items are associated with this order.
+                </p>
+            {% endfor %}
+
+            <div class="total-section">
+                <div class="total-line">
+                    <span>Payment method</span>
+                    <span>Cash on Delivery</span>
+                </div>
+
+                <div class="total-line final">
+                    <span>Total amount</span>
+                    <strong>₹{{ order.total_amount|floatformat:2 }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="farmer-note">
+            <span class="farmer-note-icon">🌾</span>
+            <div>
+                <strong>Your purchase supports local farmers</strong>
+                <p>
+                    Thank you for choosing FarmDirect. Every purchase
+                    helps connect farming communities with customers
+                    looking for fresh produce.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <aside class="side-column">
+
+        <section class="card">
+            <div class="card-heading">
+                <div>
+                    <h2 class="side-card-title">Order progress</h2>
+                    <p class="section-caption">Current order status</p>
+                </div>
+            </div>
+
+            {% if order.status == 'cancelled' %}
+
+                <div class="cancelled-notice">
+                    <strong>✕ Order cancelled</strong>
+                    This order has been cancelled. Its details remain
+                    available in your order history.
+                </div>
+
+            {% else %}
+
+                <div class="tracking-list">
+                    <div class="tracking-step is-current">
+                        <div class="tracking-marker">✓</div>
+                        <div>
+                            <p class="tracking-title">Order placed</p>
+                            <p class="tracking-description">
+                                Your order has been recorded.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tracking-step {% if order.status == 'confirmed' or order.status == 'shipped' or order.status == 'delivered' %}is-current{% endif %}">
+                        <div class="tracking-marker">
+                            {% if order.status == 'confirmed' or order.status == 'shipped' or order.status == 'delivered' %}✓{% else %}2{% endif %}
+                        </div>
+                        <div>
+                            <p class="tracking-title">Order confirmed</p>
+                            <p class="tracking-description">
+                                {% if order.status == 'pending' %}
+                                    Waiting for the farmer to confirm.
+                                {% else %}
+                                    Your order has been confirmed.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tracking-step {% if order.status == 'shipped' or order.status == 'delivered' %}is-current{% endif %}">
+                        <div class="tracking-marker">
+                            {% if order.status == 'shipped' or order.status == 'delivered' %}✓{% else %}3{% endif %}
+                        </div>
+                        <div>
+                            <p class="tracking-title">On its way</p>
+                            <p class="tracking-description">
+                                {% if order.status == 'shipped' or order.status == 'delivered' %}
+                                    Your order has been marked as shipped.
+                                {% else %}
+                                    Your produce will move to this stage after dispatch.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tracking-step {% if order.status == 'delivered' %}is-current{% endif %}">
+                        <div class="tracking-marker">
+                            {% if order.status == 'delivered' %}✓{% else %}4{% endif %}
+                        </div>
+                        <div>
+                            <p class="tracking-title">Delivered</p>
+                            <p class="tracking-description">
+                                {% if order.status == 'delivered' %}
+                                    Your order has been marked as delivered.
+                                {% else %}
+                                    Enjoy your fresh farm produce!
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+        </section>
+
+        <section class="card actions-card">
+            <h2 class="side-card-title">What would you like to do?</h2>
+            <p class="section-caption">
+                Manage your purchase or continue shopping.
+            </p>
+
+            <div class="action-buttons">
+                <a class="button button-primary"
+                   href="{% url 'my_orders' %}">
+                    ← View My Orders
+                </a>
+
+                <a class="button button-secondary"
+                   href="{% url 'home' %}">
+                    🌿 Continue Shopping
+                </a>
+
+                {% if order.status == 'pending' %}
+                    <form
+                        class="cancel-form"
+                        method="post"
+                        action="{% url 'cancel_order' order.pk %}"
+                        onsubmit="return confirm('Are you sure you want to cancel this order?');"
+                    >
+                        {% csrf_token %}
+
+                        <button class="button button-danger" type="submit">
+                            Cancel Order
+                        </button>
+
+                        <p class="cancel-help">
+                            Cancellation is available while your order
+                            is pending.
+                        </p>
+                    </form>
+                {% endif %}
+            </div>
+        </section>
+
+    </aside>
+
+</div>
+
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-brand">🌱 FarmDirect</div>
+    <p>Fresh produce. Fair prices. Stronger farms.</p>
+    <p>© 2026 FarmDirect. Connecting farms directly with families.</p>
+</footer>
+
+</body>
+</html>
+

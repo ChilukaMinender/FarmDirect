@@ -1,0 +1,773 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#176b3a">
+    <title>My Shopping Cart | FarmDirect</title>
+
+
+<style>
+    :root {
+        --green: #176b3a;
+        --green-dark: #10552d;
+        --green-light: #eaf6ed;
+        --background: #f5f8f4;
+        --text: #203428;
+        --muted: #718075;
+        --border: #e4ebe3;
+        --white: #ffffff;
+        --danger: #b42318;
+        --shadow: 0 12px 35px rgba(25, 65, 35, 0.07);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        line-height: 1.6;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .navbar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .nav-inner {
+        max-width: 1200px;
+        margin: auto;
+        padding: 17px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--green);
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.7px;
+    }
+
+    .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        background: var(--green-light);
+        font-size: 24px;
+    }
+
+    .nav-link {
+        color: var(--green);
+        font-weight: 700;
+        padding: 10px 15px;
+        border-radius: 9px;
+        transition: background 0.2s;
+    }
+
+    .nav-link:hover {
+        background: var(--green-light);
+    }
+
+    .container {
+        width: min(1100px, 100%);
+        margin: auto;
+        padding: 35px 24px 60px;
+    }
+
+    .breadcrumb {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 18px;
+    }
+
+    .breadcrumb a {
+        color: var(--green);
+    }
+
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .page-heading h1 {
+        margin: 0;
+        font-size: clamp(27px, 4vw, 36px);
+        letter-spacing: -1px;
+    }
+
+    .page-heading p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .cart-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 38px;
+        padding: 0 12px;
+        border-radius: 12px;
+        background: var(--green-light);
+        color: var(--green);
+        font-weight: 800;
+    }
+
+    .cart-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 325px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .card-heading {
+        padding: 21px 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .card-heading h2 {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .card-heading p {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 4px 0 0;
+    }
+
+    .cart-items {
+        padding: 0 24px;
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 105px minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        padding: 23px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+
+    .product-image,
+    .image-placeholder {
+        width: 105px;
+        height: 105px;
+        border-radius: 13px;
+        object-fit: cover;
+        background: #eff4ec;
+    }
+
+    .image-placeholder {
+        display: grid;
+        place-items: center;
+        font-size: 36px;
+    }
+
+    .product-name {
+        font-size: 17px;
+        font-weight: 800;
+        line-height: 1.4;
+        margin-bottom: 7px;
+    }
+
+    .product-name a {
+        color: var(--text);
+    }
+
+    .product-name a:hover {
+        color: var(--green);
+    }
+
+    .product-info {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.9;
+    }
+
+    .farmer-name {
+        color: var(--green);
+        font-weight: 700;
+    }
+
+    .item-price {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .item-price strong {
+        display: block;
+        color: var(--green);
+        font-size: 18px;
+    }
+
+    .item-price span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .warning {
+        margin-top: 10px;
+        padding: 9px 11px;
+        border-radius: 8px;
+        background: #fff0ed;
+        color: var(--danger);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .summary-card {
+        padding: 23px;
+        position: sticky;
+        top: 100px;
+    }
+
+    .summary-card h2 {
+        margin: 0 0 20px;
+        font-size: 20px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 15px 0;
+        font-size: 14px;
+    }
+
+    .summary-row span:first-child {
+        color: var(--muted);
+    }
+
+    .summary-row strong {
+        text-align: right;
+    }
+
+    .free-delivery {
+        color: var(--green);
+        font-weight: 800;
+    }
+
+    .summary-divider {
+        border: 0;
+        border-top: 1px solid var(--border);
+        margin: 20px 0;
+    }
+
+    .grand-total {
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 22px;
+    }
+
+    .grand-total strong {
+        color: var(--green);
+        font-size: 24px;
+        white-space: nowrap;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 48px;
+        padding: 13px 18px;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    .button:hover {
+        transform: translateY(-1px);
+    }
+
+    .checkout-button {
+        background: var(--green);
+        color: var(--white);
+    }
+
+    .checkout-button:hover {
+        background: var(--green-dark);
+    }
+
+    .continue-button {
+        margin-top: 10px;
+        background: var(--green-light);
+        color: var(--green);
+    }
+
+    .disabled-button {
+        background: #a7b1a8;
+        color: white;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .disabled-button:hover {
+        transform: none;
+    }
+
+    .secure-note {
+        display: flex;
+        gap: 9px;
+        align-items: flex-start;
+        margin-top: 19px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .secure-note span {
+        font-size: 17px;
+    }
+
+    .empty-cart {
+        padding: 65px 25px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 22px;
+        display: grid;
+        place-items: center;
+        border-radius: 28px;
+        background: var(--green-light);
+        font-size: 48px;
+    }
+
+    .empty-cart h2 {
+        margin: 0 0 10px;
+        font-size: 25px;
+    }
+
+    .empty-cart p {
+        max-width: 390px;
+        margin: 0 auto 25px;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .empty-cart .button {
+        width: auto;
+        min-width: 190px;
+    }
+
+    .benefits {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 25px;
+    }
+
+    .benefit {
+        display: flex;
+        gap: 11px;
+        align-items: center;
+        padding: 16px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+    }
+
+    .benefit-icon {
+        font-size: 24px;
+    }
+
+    .benefit strong {
+        display: block;
+        font-size: 12px;
+    }
+
+    .benefit span {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    footer {
+        padding: 23px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    @media (max-width: 850px) {
+        .cart-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-card {
+            position: static;
+        }
+
+        .benefits {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .nav-inner {
+            padding: 13px 16px;
+        }
+
+        .brand {
+            font-size: 20px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+        }
+
+        .nav-link {
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .container {
+            padding: 25px 13px 40px;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+        }
+
+        .page-heading h1 {
+            font-size: 27px;
+        }
+
+        .cart-count {
+            min-width: 34px;
+            height: 34px;
+        }
+
+        .card-heading {
+            padding: 18px;
+        }
+
+        .cart-items {
+            padding: 0 15px;
+        }
+
+        .cart-item {
+            grid-template-columns: 76px minmax(0, 1fr);
+            gap: 12px;
+            padding: 18px 0;
+        }
+
+        .product-image,
+        .image-placeholder {
+            width: 76px;
+            height: 76px;
+        }
+
+        .product-name {
+            font-size: 15px;
+        }
+
+        .product-info {
+            font-size: 12px;
+        }
+
+        .item-price {
+            grid-column: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+        }
+
+        .item-price span {
+            margin-top: 0;
+        }
+
+        .summary-card {
+            padding: 19px;
+        }
+
+        .empty-cart {
+            padding: 45px 18px;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-inner">
+        <a class="brand" href="{% url 'home' %}">
+            <span class="brand-icon">🌿</span>
+            <span>FarmDirect</span>
+        </a>
+
+
+    <a class="nav-link" href="{% url 'home' %}">
+        ← Continue Shopping
+    </a>
+</div>
+
+
+</header>
+
+<main class="container">
+
+
+<div class="breadcrumb">
+    <a href="{% url 'home' %}">Home</a>
+    &nbsp; / &nbsp; Shopping Cart
+</div>
+
+<div class="page-heading">
+    <div>
+        <h1>Your Shopping Cart 🛒</h1>
+        <p>Fresh from local farmers, selected just for you.</p>
+    </div>
+
+    {% if cart_items %}
+        <div class="cart-count" title="Different products in your cart">
+            {{ cart_items|length }}
+        </div>
+    {% endif %}
+</div>
+
+{% if cart_items %}
+
+    <div class="cart-layout">
+
+        <section class="card">
+            <div class="card-heading">
+                <h2>Cart Items</h2>
+                <p>Review your products before checkout.</p>
+            </div>
+
+            <div class="cart-items">
+
+                {% for item in cart_items %}
+
+                    <article class="cart-item">
+
+                        <div>
+                            {% if item.product.image %}
+                                <img
+                                    class="product-image"
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                >
+                            {% else %}
+                                <div class="image-placeholder">🌱</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <div class="product-name">
+                                <a href="{% url 'product_detail' item.product.pk %}">
+                                    {{ item.product.name }}
+                                </a>
+                            </div>
+
+                            <div class="product-info">
+                                Price: ₹{{ item.product.price|floatformat:2 }}
+                                / {{ item.product.unit }}
+                                <br>
+
+                                Quantity: {{ item.quantity }}
+                                {{ item.product.unit }}
+                                <br>
+
+                                Farmer:
+                                <span class="farmer-name">
+                                    {{ item.product.farmer.first_name|default:item.product.farmer.username }}
+                                </span>
+                            </div>
+
+                            {% if not item.available %}
+                                <div class="warning">
+                                    ⚠️ This quantity is currently unavailable.
+                                    Please adjust your cart before checkout.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="item-price">
+                            <strong>
+                                ₹{{ item.subtotal|floatformat:2 }}
+                            </strong>
+                            <span>Item subtotal</span>
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+        </section>
+
+        <aside class="card summary-card">
+            <h2>Order Summary</h2>
+
+            <div class="summary-row">
+                <span>Different products</span>
+                <strong>{{ cart_items|length }}</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Delivery</span>
+                <strong class="free-delivery">Calculated at checkout</strong>
+            </div>
+
+            <hr class="summary-divider">
+
+            <div class="summary-row grand-total">
+                <span>Total Amount</span>
+                <strong>₹{{ total_amount|floatformat:2 }}</strong>
+            </div>
+
+            {% if unavailable_items %}
+                <span
+                    class="button disabled-button"
+                    aria-disabled="true"
+                >
+                    Fix Cart Availability First
+                </span>
+            {% else %}
+                <a
+                    href="{% url 'checkout' %}"
+                    class="button checkout-button"
+                >
+                    Proceed to Checkout →
+                </a>
+            {% endif %}
+
+            <a
+                href="{% url 'home' %}"
+                class="button continue-button"
+            >
+                + Add More Products
+            </a>
+
+            <div class="secure-note">
+                <span>🌾</span>
+                <div>
+                    <strong>Support Local Farmers</strong><br>
+                    Your order connects you directly with local farmers.
+                </div>
+            </div>
+
+            <div class="secure-note">
+                <span>🛡️</span>
+                <div>
+                    Your final availability and prices will be verified before your order is placed.
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <div class="benefits">
+        <div class="benefit">
+            <div class="benefit-icon">🌱</div>
+            <div>
+                <strong>Farm Fresh</strong>
+                <span>Products from local farmers</span>
+            </div>
+        </div>
+
+        <div class="benefit">
+            <div class="benefit-icon">🤝</div>
+            <div>
+                <strong>Farmer First</strong>
+                <span>Support farming communities</span>
+            </div>
+        </div>
+
+        <div class="benefit">
+            <div class="benefit-icon">📦</div>
+            <div>
+                <strong>Order Tracking</strong>
+                <span>Track your order after checkout</span>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+
+    <section class="card empty-cart">
+        <div class="empty-icon">🛒</div>
+
+        <h2>Your cart is waiting for something fresh!</h2>
+
+        <p>
+            You haven't added any products yet.
+            Explore fresh products directly from local farmers
+            and add your favourites to your cart.
+        </p>
+
+        <a href="{% url 'home' %}" class="button checkout-button">
+            🌿 Explore Fresh Products
+        </a>
+    </section>
+
+{% endif %}
+
+
+</main>
+
+<footer>
+    © {% now "Y" %} FarmDirect · Connecting Farmers and Customers 🌱
+</footer>
+
+</body>
+</html>

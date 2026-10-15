@@ -1,0 +1,137 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Account | FarmDirect</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .auth-wrapper {
+            max-width: 540px;
+            margin: 55px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #e4ebe1;
+            box-shadow: 0 12px 40px #183c2810;
+        }
+        .auth-wrapper h1 {
+            color: #173c2c;
+            margin-bottom: 8px;
+        }
+        .auth-wrapper > p {
+            color: #748078;
+            margin-bottom: 25px;
+        }
+        .auth-form p {
+            margin-bottom: 15px;
+        }
+        .auth-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .auth-form input,
+        .auth-form select,
+        .auth-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dce5d9;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .auth-form input:focus,
+        .auth-form select:focus,
+        .auth-form textarea:focus {
+            outline: 2px solid #b6d9bd;
+            border-color: #26734d;
+        }
+        .auth-form .helptext {
+            display: block;
+            color: #748078;
+            font-size: 12px;
+        }
+        .auth-form ul.errorlist {
+            color: #bd3030;
+            font-size: 13px;
+            padding-left: 20px;
+        }
+        .auth-submit {
+            width: 100%;
+            border: none;
+            background: #26734d;
+            color: white;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .auth-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .auth-footer a {
+            color: #26734d;
+            font-weight: 700;
+        }
+        .form-errors {
+            background: #fff0f0;
+            color: #a21c1c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+        }
+        @media(max-width:600px) {
+            .auth-wrapper {
+                margin: 25px 15px;
+                padding: 23px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">🌱 FarmDirect</a>
+        <a href="/" class="secondary-btn">← Home</a>
+    </header>
+
+    <main class="auth-wrapper">
+        <span class="eyebrow">JOIN OUR COMMUNITY</span>
+        <h1>Create your account</h1>
+        <p>Join FarmDirect as a farmer or customer.</p>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <p>
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {{ field.errors }}
+                </p>
+            {% endfor %}
+
+            <button type="submit" class="auth-submit">
+                Create Account →
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already registered?
+            <a href="{% url 'login' %}">Log in</a>
+        </div>
+    </main>
+</body>
+</html>
