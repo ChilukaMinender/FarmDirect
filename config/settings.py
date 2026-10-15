@@ -2,12 +2,13 @@
 from pathlib import Path
 import os
 import dj_database_url
+import cloudinary
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 DEBUG = os.environ.get(
-    "DJANGO_DEBUG", "True"
+    "DJANGO_DEBUG", "False"
 ).strip().lower() == "true"
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
@@ -53,6 +54,19 @@ CLOUDINARY_API_KEY = os.environ.get(
 CLOUDINARY_API_SECRET = os.environ.get(
     "CLOUDINARY_API_SECRET", ""
 ).strip()
+
+# Configure Cloudinary only when all credentials are present
+if (
+    CLOUDINARY_CLOUD_NAME
+    and CLOUDINARY_API_KEY
+    and CLOUDINARY_API_SECRET
+):
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+        secure=True,
+    )
 
 # Applications
 INSTALLED_APPS = [
@@ -109,11 +123,13 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
     DATABASES = {
-        "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        "default": {
+            **dj_database_url.parse(
+                DATABASE_URL,
+                conn_max_age=600,
+                conn_health_checks=True,
+            ),
+        }
     }
 else:
     DATABASES = {
@@ -153,18 +169,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
             "django.contrib.auth.password_validation."
-            "MinimumLengthValidator"
-        ),
-    },
-    {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "CommonPasswordValidator"
-        ),
-    },
-    {
-        "NAME": (
-            "django.contrib.auth.password_validation."
             "NumericPasswordValidator"
         ),
     },
@@ -181,41 +185,31 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Media storage
-# Use Cloudinary when all three credentials are configured.
-# Otherwise, use local filesystem storage for development.
+# Storage configuration
 if (
     CLOUDINARY_CLOUD_NAME
     and CLOUDINARY_API_KEY
     and CLOUDINARY_API_SECRET
 ):
-    STORAGES = {
-        "default": {
-            "BACKEND": (
-                "cloudinary_storage.storage.MediaCloudinaryStorage"
-            ),
-        },
-        "staticfiles": {
-            "BACKEND": (
-                "whitenoise.storage."
-                "CompressedManifestStaticFilesStorage"
-            ),
-        },
-    }
+    DEFAULT_STORAGE_BACKEND = (
+        "cloudinary_storage.storage.MediaCloudinaryStorage"
+    )
 else:
-    STORAGES = {
-        "default": {
-            "BACKEND": (
-                "django.core.files.storage.FileSystemStorage"
-            ),
-        },
-        "staticfiles": {
-            "BACKEND": (
-                "whitenoise.storage."
-                "CompressedManifestStaticFilesStorage"
-            ),
-        },
-    }
+    DEFAULT_STORAGE_BACKEND = (
+        "django.core.files.storage.FileSystemStorage"
+    )
+
+STORAGES = {
+    "default": {
+        "BACKEND": DEFAULT_STORAGE_BACKEND,
+    },
+    "staticfiles": {
+        "BACKEND": (
+            "whitenoise.storage."
+            "CompressedManifestStaticFilesStorage"
+        ),
+    },
+}
 
 # Media URL and root for local development
 MEDIA_URL = "/media/"
