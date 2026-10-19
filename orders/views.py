@@ -1,5 +1,4 @@
-﻿
-from decimal import Decimal
+﻿from decimal import Decimal
 
 from django.contrib import messages
 from django.http import JsonResponse
@@ -308,53 +307,61 @@ def farmer_orders(request):
 
 @login_required
 def farmer_order_detail(request, pk):
-    if (
-        not hasattr(request.user, "profile")
-        or request.user.profile.role != "farmer"
-    ):
-        messages.error(
-            request,
-            "Only farmers can access farmer order details.",
+    try:
+        if (
+            not hasattr(request.user, "profile")
+            or request.user.profile.role != "farmer"
+        ):
+            messages.error(
+                request,
+                "Only farmers can access farmer order details.",
+            )
+            return redirect("home")
+
+        order = get_object_or_404(
+            Order.objects.prefetch_related("items__product"),
+            pk=pk,
+            items__product__farmer=request.user,
         )
-        return redirect("home")
 
-    order = get_object_or_404(
-        Order.objects.prefetch_related("items__product"),
-        pk=pk,
-        items__product__farmer=request.user,
-    )
+        items = [
+            {
+                "product": item.product,
+                "quantity": item.quantity,
+                "price": item.price,
+                "subtotal": item.price * item.quantity,
+            }
+            for item in order.items.all()
+            if item.product.farmer_id == request.user.id
+        ]
 
-    items = [
-        {
-            "product": item.product,
-            "quantity": item.quantity,
-            "price": item.price,
-            "subtotal": item.price * item.quantity,
-        }
-        for item in order.items.all()
-        if item.product.farmer_id == request.user.id
-    ]
+        farmer_subtotal = sum(
+            (item["subtotal"] for item in items),
+            Decimal("0.00"),
+        )
 
-    farmer_subtotal = sum(
-        (item["subtotal"] for item in items),
-        Decimal("0.00"),
-    )
+        display_number = farmer_display_number(order, request.user)
 
-    display_number = farmer_display_number(
-        order,
-        request.user,
-    )
+        return render(
+            request,
+            "orders/farmer_order_detail.html",
+            {
+                "order": order,
+                "items": items,
+                "farmer_subtotal": farmer_subtotal,
+                "display_number": display_number,
+            },
+        )
 
-    return render(
-        request,
-        "orders/farmer_order_detail.html",
-        {
-            "order": order,
-            "items": items,
-            "farmer_subtotal": farmer_subtotal,
-            "display_number": display_number,
-        },
-    )
+    except Exception:
+        import logging
+
+        logging.getLogger(__name__).exception(
+            "FARMER ORDER DETAIL ERROR: order_id=%s, user_id=%s",
+            pk,
+            request.user.pk,
+        )
+        raise
 
 
 @login_required
