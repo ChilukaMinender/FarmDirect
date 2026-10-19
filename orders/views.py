@@ -319,9 +319,10 @@ def farmer_order_detail(request, pk):
             return redirect("home")
 
         order = get_object_or_404(
-            Order.objects.prefetch_related("items__product"),
+            Order.objects.filter(
+                items__product__farmer=request.user,
+            ).distinct().prefetch_related("items__product"),
             pk=pk,
-            items__product__farmer=request.user,
         )
 
         items = [
